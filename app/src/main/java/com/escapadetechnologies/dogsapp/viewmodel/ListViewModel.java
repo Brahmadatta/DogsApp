@@ -6,12 +6,22 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
+import com.escapadetechnologies.dogsapp.model.DogApiService;
 import com.escapadetechnologies.dogsapp.model.DogBreed;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
+
 public class ListViewModel extends AndroidViewModel {
+
+    private DogApiService mDogApiService = new DogApiService();
+    private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
 
     public MutableLiveData<List<DogBreed>> dogs = new MutableLiveData<List<DogBreed>>();
 
@@ -23,36 +33,41 @@ public class ListViewModel extends AndroidViewModel {
         super(application);
     }
 
-    public void refresh(){
-        DogBreed dog1 = new DogBreed("1","cargi","15 yrs","","","","");
-        DogBreed dog2 = new DogBreed("2","shepard","10 yrs","","","","");
-        DogBreed dog3 = new DogBreed("3","labrador","13 yrs","","","","");
-        DogBreed dog4 = new DogBreed("3","labrador","13 yrs","","","","");
-        DogBreed dog5 = new DogBreed("3","labrador","13 yrs","","","","");
-        DogBreed dog6 = new DogBreed("3","labrador","13 yrs","","","","");
-        DogBreed dog7 = new DogBreed("3","labrador","13 yrs","","","","");
-        DogBreed dog8 = new DogBreed("3","labrador","13 yrs","","","","");
-        DogBreed dog9 = new DogBreed("3","labrador","13 yrs","","","","");
-        DogBreed dog10 = new DogBreed("3","labrador","13 yrs","","","","");
-        DogBreed dog11 = new DogBreed("3","labrador","13 yrs","","","","");
-        DogBreed dog12 = new DogBreed("3","labrador","13 yrs","","","","");
+    public void refresh() {
 
-        ArrayList<DogBreed> dogBreeds = new ArrayList<>();
-        dogBreeds.add(dog1);
-        dogBreeds.add(dog2);
-        dogBreeds.add(dog3);
-        dogBreeds.add(dog4);
-        dogBreeds.add(dog5);
-        dogBreeds.add(dog6);
-        dogBreeds.add(dog7);
-        dogBreeds.add(dog8);
-        dogBreeds.add(dog9);
-        dogBreeds.add(dog10);
-        dogBreeds.add(dog11);
-        dogBreeds.add(dog12);
+        fetchFromRemote();
+    }
 
-        dogs.setValue(dogBreeds);
-        dogLoadError.setValue(false);
-        loading.setValue(false);
+    private void fetchFromRemote() {
+
+        loading.setValue(true);
+        mCompositeDisposable.add(
+                mDogApiService.getDogs()
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(new DisposableSingleObserver<List<DogBreed>>() {
+                            @Override
+                            public void onSuccess(List<DogBreed> dogBreeds) {
+
+                                dogs.setValue(dogBreeds);
+                                dogLoadError.setValue(false);
+                                loading.setValue(false);
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                                dogLoadError.setValue(true);
+                                loading.setValue(false);
+                                e.printStackTrace();
+                            }
+                        })
+        );
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        mCompositeDisposable.clear();
     }
 }

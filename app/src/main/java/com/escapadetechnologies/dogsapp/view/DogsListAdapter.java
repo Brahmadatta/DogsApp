@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.escapadetechnologies.dogsapp.R;
 import com.escapadetechnologies.dogsapp.model.DogBreed;
-import com.escapadetechnologies.util.Util;
+import com.escapadetechnologies.dogsapp.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;

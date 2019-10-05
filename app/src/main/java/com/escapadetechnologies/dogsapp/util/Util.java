@@ -1,4 +1,4 @@
-package com.escapadetechnologies.util;
+package com.escapadetechnologies.dogsapp.util;
 
 import android.content.Context;
 import android.widget.ImageView;

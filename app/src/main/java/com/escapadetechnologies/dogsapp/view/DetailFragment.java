@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 
 import com.escapadetechnologies.dogsapp.R;
 import com.escapadetechnologies.dogsapp.model.DogBreed;
+import com.escapadetechnologies.dogsapp.util.Util;
 import com.escapadetechnologies.dogsapp.viewmodel.DetailViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -72,18 +74,22 @@ public class DetailFragment extends Fragment {
         }
 
         mDetailViewModel = ViewModelProviders.of(this).get(DetailViewModel.class);
-        mDetailViewModel.fetch();
+        mDetailViewModel.fetch(dogUuid);
 
         observeVIewModel();
     }
 
     private void observeVIewModel() {
         mDetailViewModel.dogLiveData.observe(this, dogBreed -> {
-            if (dogBreed != null && dogBreed instanceof DogBreed){
+            if (dogBreed != null && dogBreed instanceof DogBreed && getContext() != null){
                 dogName.setText(dogBreed.dogBreed);
                 dogPurpose.setText(dogBreed.bredFor);
                 dogTemparment.setText(dogBreed.temperament);
                 dogLifeSpan.setText(dogBreed.lifeSpan);
+
+                if (dogBreed.imageUrl != null){
+                    Util.loadImage(dogImage,dogBreed.imageUrl,new CircularProgressDrawable(getContext()));
+                }
             }
         });
     }

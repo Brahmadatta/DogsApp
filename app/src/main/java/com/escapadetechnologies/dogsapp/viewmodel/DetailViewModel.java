@@ -1,17 +1,53 @@
 package com.escapadetechnologies.dogsapp.viewmodel;
 
+import android.app.Application;
+import android.os.AsyncTask;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.escapadetechnologies.dogsapp.model.DogBreed;
+import com.escapadetechnologies.dogsapp.model.DogDatabase;
 
-public class DetailViewModel extends ViewModel {
+public class DetailViewModel extends AndroidViewModel {
 
 
     public MutableLiveData<DogBreed> dogLiveData = new MutableLiveData<DogBreed>();
 
-    public void fetch(){
-        DogBreed dog1 = new DogBreed("1","cargi","15 yrs","","companionship","calm and friendly","");
-        dogLiveData.setValue(dog1);
+    private RetrieveDogTask mDogTask;
+
+    public DetailViewModel(@NonNull Application application) {
+        super(application);
+    }
+
+    public void fetch(int uuid){
+        mDogTask = new RetrieveDogTask();
+        mDogTask.execute(uuid);
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        if (mDogTask != null){
+            mDogTask.cancel(true);
+            mDogTask = null;
+        }
+    }
+
+    private class RetrieveDogTask extends AsyncTask<Integer,Void,DogBreed>{
+
+        @Override
+        protected DogBreed doInBackground(Integer... integers) {
+            int uuid = integers[0];
+            return DogDatabase.getInstance(getApplication()).mDogDao().getDog(uuid);
+        }
+
+        @Override
+        protected void onPostExecute(DogBreed dogBreed) {
+
+            dogLiveData.setValue(dogBreed);
+        }
     }
 }

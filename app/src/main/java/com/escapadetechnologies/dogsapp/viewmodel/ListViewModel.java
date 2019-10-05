@@ -12,6 +12,7 @@ import com.escapadetechnologies.dogsapp.model.DogApiService;
 import com.escapadetechnologies.dogsapp.model.DogBreed;
 import com.escapadetechnologies.dogsapp.model.DogDao;
 import com.escapadetechnologies.dogsapp.model.DogDatabase;
+import com.escapadetechnologies.dogsapp.util.SharedPreferenceHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,11 @@ public class ListViewModel extends AndroidViewModel {
 
     public MutableLiveData<Boolean> loading = new MutableLiveData<Boolean>();
 
+    private SharedPreferenceHelper mSharedPreferenceHelper = SharedPreferenceHelper.getInstance(getApplication());
+    private long refreshTime = 5 * 60 * 1000 * 1000 * 1000L;
+
     AsyncTask<List<DogBreed>,Void,List<DogBreed>> insertTask;
+    AsyncTask<Void,Void,List<DogBreed>> retrieveTask;
 
     public ListViewModel(@NonNull Application application) {
         super(application);
@@ -41,7 +46,21 @@ public class ListViewModel extends AndroidViewModel {
 
     public void refresh() {
 
-        fetchFromRemote();
+
+        long updateTime = mSharedPreferenceHelper.getUpdateTime();
+        long currentTime = System.nanoTime();
+
+        if (updateTime != 0 && currentTime - updateTime < refreshTime){
+            fetchFromDatabase();
+        }else {
+            fetchFromRemote();
+        }
+    }
+
+    private void fetchFromDatabase(){
+        loading.setValue(true);
+        retrieveTask = new RetrieveDogsTask();
+        retrieveTask.execute();
     }
 
     private void fetchFromRemote() {
@@ -87,6 +106,11 @@ public class ListViewModel extends AndroidViewModel {
             insertTask.cancel(true);
             insertTask = null;
         }
+
+        if (retrieveTask != null){
+            retrieveTask.cancel(true);
+            retrieveTask = null;
+        }
     }
 
     private class InsertDogsTask extends AsyncTask<List<DogBreed>,Void,List<DogBreed>>{
@@ -113,6 +137,21 @@ public class ListViewModel extends AndroidViewModel {
         protected void onPostExecute(List<DogBreed> dogBreedList) {
             super.onPostExecute(dogBreedList);
             dogsRetrieved(dogBreedList);
+            mSharedPreferenceHelper.saveUpdateTime(System.nanoTime());
+        }
+    }
+
+    private class RetrieveDogsTask extends AsyncTask<Void,Void,List<DogBreed>>{
+
+        @Override
+        protected List<DogBreed> doInBackground(Void... voids) {
+            return DogDatabase.getInstance(getApplication()).mDogDao().getAllDOgs();
+        }
+
+        @Override
+        protected void onPostExecute(List<DogBreed> dogBreedList) {
+            dogsRetrieved(dogBreedList);
+            Toast.makeText(getApplication(), "Dogs Retrieved from Database", Toast.LENGTH_SHORT).show();
         }
     }
 }

@@ -6,7 +6,7 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-@Database(entities = {DogBreed.class},version = 1)
+@Database(entities = {DogBreed.class},version = 1,exportSchema = true)
 public abstract class DogDatabase extends RoomDatabase {
 
     private static DogDatabase instance;

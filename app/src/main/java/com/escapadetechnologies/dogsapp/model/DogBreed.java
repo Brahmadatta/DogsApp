@@ -36,7 +36,7 @@ public class DogBreed {
     public String imageUrl;
 
     @PrimaryKey(autoGenerate = true)
-    public String uuid;
+    public Integer  uuid;
 
     public DogBreed(String breedId, String dogBreed, String lifeSpan, String breedGroup, String bredFor, String temperament, String imageUrl) {
         this.breedId = breedId;

@@ -1,6 +1,8 @@
 package com.escapadetechnologies.dogsapp.viewmodel;
 
 import android.app.Application;
+import android.os.AsyncTask;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -8,6 +10,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.escapadetechnologies.dogsapp.model.DogApiService;
 import com.escapadetechnologies.dogsapp.model.DogBreed;
+import com.escapadetechnologies.dogsapp.model.DogDao;
+import com.escapadetechnologies.dogsapp.model.DogDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +33,8 @@ public class ListViewModel extends AndroidViewModel {
 
     public MutableLiveData<Boolean> loading = new MutableLiveData<Boolean>();
 
+    AsyncTask<List<DogBreed>,Void,List<DogBreed>> insertTask;
+
     public ListViewModel(@NonNull Application application) {
         super(application);
     }
@@ -49,9 +55,10 @@ public class ListViewModel extends AndroidViewModel {
                             @Override
                             public void onSuccess(List<DogBreed> dogBreeds) {
 
-                                dogs.setValue(dogBreeds);
-                                dogLoadError.setValue(false);
-                                loading.setValue(false);
+                                insertTask = new InsertDogsTask();
+                                insertTask.execute(dogBreeds);
+                                Toast.makeText(getApplication(), "Dogs data retrieved", Toast.LENGTH_SHORT).show();
+
                             }
 
                             @Override
@@ -65,9 +72,47 @@ public class ListViewModel extends AndroidViewModel {
         );
     }
 
+    private void dogsRetrieved(List<DogBreed> dogBreedList){
+        dogs.setValue(dogBreedList);
+        dogLoadError.setValue(false);
+        loading.setValue(false);
+    }
+
     @Override
     protected void onCleared() {
         super.onCleared();
         mCompositeDisposable.clear();
+
+        if (insertTask != null){
+            insertTask.cancel(true);
+            insertTask = null;
+        }
+    }
+
+    private class InsertDogsTask extends AsyncTask<List<DogBreed>,Void,List<DogBreed>>{
+
+        @Override
+        protected List<DogBreed> doInBackground(List<DogBreed>... lists) {
+            List<DogBreed> list = lists[0];
+            DogDao dao = DogDatabase.getInstance(getApplication()).mDogDao();
+            dao.deleteAllDogs();
+
+            ArrayList<DogBreed> newList = new ArrayList<>(list);
+            List<Long> result = dao.insertAll(newList.toArray(new DogBreed[0]));
+
+
+            int i = 0;
+            while (i < list.size()){
+                list.get(i).uuid = result.get(i).intValue();
+                ++i;
+            }
+            return list;
+        }
+
+        @Override
+        protected void onPostExecute(List<DogBreed> dogBreedList) {
+            super.onPostExecute(dogBreedList);
+            dogsRetrieved(dogBreedList);
+        }
     }
 }

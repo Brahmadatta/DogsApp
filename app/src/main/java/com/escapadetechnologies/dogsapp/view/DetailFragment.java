@@ -82,7 +82,7 @@ public class DetailFragment extends Fragment {
             if (dogBreed != null && dogBreed instanceof DogBreed){
                 dogName.setText(dogBreed.dogBreed);
                 dogPurpose.setText(dogBreed.bredFor);
-                dogTemparment.setText(dogBreed.temparment);
+                dogTemparment.setText(dogBreed.temperament);
                 dogLifeSpan.setText(dogBreed.lifeSpan);
             }
         });

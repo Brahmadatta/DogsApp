@@ -1,13 +1,14 @@
-package com.escapadetechnologies.dogsapp.util;
+package com.example.dogsapp.util;
 
 import android.content.Context;
 import android.widget.ImageView;
 
+import androidx.databinding.BindingAdapter;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.escapadetechnologies.dogsapp.R;
+import com.example.dogsapp.R;
 
 public class Util {
 
@@ -31,4 +32,10 @@ public class Util {
         cpd.start();
         return cpd;
     }
+
+    @BindingAdapter("android:imageurl")
+    public static void loadImage(ImageView view,String url){
+        loadImage(view,url,getProgressDrawable(view.getContext()));
+    }
+
 }

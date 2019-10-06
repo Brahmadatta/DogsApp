@@ -1,4 +1,4 @@
-package com.escapadetechnologies.dogsapp;
+package com.example.dogsapp;
 
 import org.junit.Test;
 

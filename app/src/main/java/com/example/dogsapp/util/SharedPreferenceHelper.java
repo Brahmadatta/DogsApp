@@ -1,4 +1,4 @@
-package com.escapadetechnologies.dogsapp.util;
+package com.example.dogsapp.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;

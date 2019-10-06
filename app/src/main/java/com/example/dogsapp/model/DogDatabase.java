@@ -1,4 +1,4 @@
-package com.escapadetechnologies.dogsapp.model;
+package com.example.dogsapp.model;
 
 import android.content.Context;
 

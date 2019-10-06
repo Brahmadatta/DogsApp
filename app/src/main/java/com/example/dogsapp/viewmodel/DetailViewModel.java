@@ -1,4 +1,4 @@
-package com.escapadetechnologies.dogsapp.viewmodel;
+package com.example.dogsapp.viewmodel;
 
 import android.app.Application;
 import android.os.AsyncTask;
@@ -6,10 +6,9 @@ import android.os.AsyncTask;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-import com.escapadetechnologies.dogsapp.model.DogBreed;
-import com.escapadetechnologies.dogsapp.model.DogDatabase;
+import com.example.dogsapp.model.DogBreed;
+import com.example.dogsapp.model.DogDatabase;
 
 public class DetailViewModel extends AndroidViewModel {
 

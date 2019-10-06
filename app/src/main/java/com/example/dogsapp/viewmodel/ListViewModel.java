@@ -1,4 +1,4 @@
-package com.escapadetechnologies.dogsapp.viewmodel;
+package com.example.dogsapp.viewmodel;
 
 import android.app.Application;
 import android.os.AsyncTask;
@@ -8,16 +8,15 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import com.escapadetechnologies.dogsapp.model.DogApiService;
-import com.escapadetechnologies.dogsapp.model.DogBreed;
-import com.escapadetechnologies.dogsapp.model.DogDao;
-import com.escapadetechnologies.dogsapp.model.DogDatabase;
-import com.escapadetechnologies.dogsapp.util.SharedPreferenceHelper;
+import com.example.dogsapp.model.DogApiService;
+import com.example.dogsapp.model.DogBreed;
+import com.example.dogsapp.model.DogDao;
+import com.example.dogsapp.model.DogDatabase;
+import com.example.dogsapp.util.SharedPreferenceHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;

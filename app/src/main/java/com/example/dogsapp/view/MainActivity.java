@@ -1,4 +1,4 @@
-package com.escapadetechnologies.dogsapp.view;
+package com.example.dogsapp.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -8,7 +8,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import android.os.Bundle;
 
-import com.escapadetechnologies.dogsapp.R;
+import com.example.dogsapp.R;
 
 public class MainActivity extends AppCompatActivity {
 

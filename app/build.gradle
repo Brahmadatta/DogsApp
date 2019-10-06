@@ -6,7 +6,7 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.0"
     defaultConfig {
-        applicationId "com.escapadetechnologies.dogsapp"
+        applicationId "com.example.dogsapp"
         minSdkVersion 15
         targetSdkVersion 29
         versionCode 1

@@ -1,4 +1,4 @@
-package com.escapadetechnologies.dogsapp.model;
+package com.example.dogsapp.model;
 
 import androidx.room.Dao;
 import androidx.room.Insert;

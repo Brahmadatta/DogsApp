@@ -12,6 +12,7 @@ import com.example.dogsapp.model.DogApiService;
 import com.example.dogsapp.model.DogBreed;
 import com.example.dogsapp.model.DogDao;
 import com.example.dogsapp.model.DogDatabase;
+import com.example.dogsapp.util.NotificationHelper;
 import com.example.dogsapp.util.SharedPreferenceHelper;
 
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class ListViewModel extends AndroidViewModel {
 
     public void refresh() {
 
+        checkCacheDuration();
 
         long updateTime = mSharedPreferenceHelper.getUpdateTime();
         long currentTime = System.nanoTime();
@@ -59,6 +61,23 @@ public class ListViewModel extends AndroidViewModel {
     public void refreshByCache(){
 
         fetchFromRemote();
+    }
+
+    private void checkCacheDuration(){
+
+        String preferenceTime = mSharedPreferenceHelper.getCacheDuration();
+
+        if (!preferenceTime.equals("")){
+            try {
+
+                int cachePreferenceInt = Integer.parseInt(preferenceTime);
+                refreshTime = cachePreferenceInt * 1000 * 1000 * 1000L;
+
+            }catch (NumberFormatException e){
+                e.printStackTrace();
+            }
+        }
+
     }
 
     private void fetchFromDatabase(){
@@ -81,6 +100,8 @@ public class ListViewModel extends AndroidViewModel {
                                 insertTask = new InsertDogsTask();
                                 insertTask.execute(dogBreeds);
                                 Toast.makeText(getApplication(), "Dogs data retrieved", Toast.LENGTH_SHORT).show();
+
+                                NotificationHelper.getInstance(getApplication()).createNotification();
 
                             }
 

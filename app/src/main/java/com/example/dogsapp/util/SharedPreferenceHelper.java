@@ -33,4 +33,10 @@ public class SharedPreferenceHelper {
         return mPreferences.getLong(PREF_TIME,0);
     }
 
+    public String getCacheDuration(){
+
+        return mPreferences.getString("pref_cache_duration","");
+
+    }
+
 }

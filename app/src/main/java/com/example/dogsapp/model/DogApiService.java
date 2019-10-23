@@ -1,26 +1,23 @@
 package com.example.dogsapp.model;
 
+import com.example.dogsapp.di.DaggerDogApiComponent;
+
 import java.util.List;
 
+import javax.inject.Inject;
+
 import io.reactivex.Single;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DogApiService {
 
-    private static final String BASE_URL = "https://raw.githubusercontent.com";
 
-    private DogApi mDogApi;
+    @Inject
+    public DogApi mDogApi;
 
 
     public DogApiService(){
-        mDogApi = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .build()
-                .create(DogApi.class);
+        //DaggerDogApiComponent.create().inject(this);
+        DaggerDogApiComponent.create().inject(this);
     }
 
     public Single<List<DogBreed>> getDogs(){

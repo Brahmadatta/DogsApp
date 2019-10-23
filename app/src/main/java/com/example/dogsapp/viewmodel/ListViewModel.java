@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.dogsapp.di.DaggerDogApiComponent;
 import com.example.dogsapp.model.DogApiService;
 import com.example.dogsapp.model.DogBreed;
 import com.example.dogsapp.model.DogDao;
@@ -18,6 +19,8 @@ import com.example.dogsapp.util.SharedPreferenceHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
@@ -25,7 +28,10 @@ import io.reactivex.schedulers.Schedulers;
 
 public class ListViewModel extends AndroidViewModel {
 
-    private DogApiService mDogApiService = new DogApiService();
+    @Inject
+    public DogApiService mDogApiService;
+
+
     private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
 
     public MutableLiveData<List<DogBreed>> dogs = new MutableLiveData<List<DogBreed>>();
@@ -42,6 +48,7 @@ public class ListViewModel extends AndroidViewModel {
 
     public ListViewModel(@NonNull Application application) {
         super(application);
+        DaggerDogApiComponent.create().inject(this);
     }
 
     public void refresh() {
